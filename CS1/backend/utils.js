@@ -36,7 +36,7 @@ async function shortUrl(url) {
             await create(newID, url);
             return newID;
         }
-        // Nếu ID đã tồn tại, tiếp tục vòng lặp
+        
     }
 }
 
