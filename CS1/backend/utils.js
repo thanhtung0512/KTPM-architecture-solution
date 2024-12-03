@@ -21,6 +21,14 @@ function create(id, url) {
 }
 
 async function shortUrl(url) {
+    // Kiểm tra xem URL đã tồn tại trong cơ sở dữ liệu chưa
+    const existingLink = await Link.findOne({ where: { url } });
+
+    // Nếu URL đã tồn tại, trả về ID tương ứng
+    if (existingLink) {
+        return existingLink.id;
+    }
+
     while (true) {
         let newID = makeID(5);
         let originUrl = await findOrigin(newID);

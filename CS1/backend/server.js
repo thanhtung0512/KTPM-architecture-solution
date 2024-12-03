@@ -3,6 +3,16 @@ const lib = require('./utils')
 const app = express()
 const port = 3000
 
+// Middleware xác thực URL
+function validateUrl(req, res, next) {
+    const url = req.query.url;
+    const regex = /^(ftp|http|https):\/\/[^ "]+$/;
+    if (!url || !regex.test(url)) {
+        return res.status(400).send("Invalid URL format");
+    }
+    next();
+}
+
 app.get('/short/:id', async (req, res) => {
     try {
         const id = req.params.id;
@@ -18,7 +28,7 @@ app.get('/short/:id', async (req, res) => {
     }
 })
 
-app.post('/create', async (req, res) => {
+app.post('/create', validateUrl, async (req, res) => {
     try {
         const url = req.query.url;
         const newID = await lib.shortUrl(url);
