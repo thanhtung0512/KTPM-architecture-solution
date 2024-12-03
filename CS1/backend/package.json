@@ -1,16 +1,18 @@
 {
-  "name": "cs1",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.21.0",
-    "sequelize": "^6.37.5",
-    "sqlite3": "^5.1.7"
-  }
+	"name": "cs1",
+	"version": "1.0.0",
+	"description": "",
+	"main": "server.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"dev": "nodemon server.js"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"express": "^4.21.0",
+		"nodemon": "^3.1.7",
+		"sequelize": "^6.37.5",
+		"sqlite3": "^5.1.7"
+	}
 }
