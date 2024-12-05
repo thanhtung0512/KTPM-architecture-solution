@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const lib = require('./utils')
 const app = express()
 const port = 3000
@@ -12,6 +13,12 @@ function validateUrl(req, res, next) {
     }
     next();
 }
+
+app.use(
+	cors({
+		origin: "*", // allow requests from any other server
+	})
+);
 
 app.get('/short/:id', async (req, res) => {
     try {
