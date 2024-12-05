@@ -11,10 +11,19 @@
 	right: 50%;
 	transform: translate(50%, -50%);
 	border: 1px solid #ccc;
-  padding: 34px 32px;
+	padding: 34px 32px;
 	border-radius: 60px;
-  .title{
-    padding-top: 12px;
-    font-weight: bold;
-  }
+	.title {
+		padding-top: 12px;
+		font-weight: bold;
+		display: flex;
+		flex-direction: row;
+		gap: 8px;
+		a {
+			width: 50%;
+			display: block;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+	}
 }
