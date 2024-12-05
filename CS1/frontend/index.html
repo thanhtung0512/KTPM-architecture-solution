@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e0f7fa; /* Màu nền teal nhạt */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Căn giữa theo chiều ngang */
+        }
+        h1 {
+            color: #00796b; /* Màu teal đậm */
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: #004d40; /* Màu teal đậm hơn */
+        }
+        form {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Căn giữa các phần tử trong form */
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            margin: 10px 0; /* Thêm khoảng cách giữa các phần tử */
+            border: 1px solid #00796b; /* Đường viền teal */
+            border-radius: 4px; /* Bo góc */
+        }
+        input[type="submit"] {
+            padding: 10px 15px;
+            background-color: #00796b; /* Màu nền teal */
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px; /* Bo góc */
+        }
+        input[type="submit"]:hover {
+            background-color: #004d40; /* Màu khi hover */
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: white; /* Màu nền trắng */
+            border: 1px solid #ddd;
+            border-radius: 4px; /* Bo góc */
+            text-align: center; /* Căn giữa nội dung */
+            width: 300px; /* Chiều rộng cố định */
+        }
+        .error {
+            color: #d32f2f; /* Màu đỏ cho thông báo lỗi */
+        }
+    </style>
+</head>
+<body>
+    <h1>URL Shortener</h1>
+
+    <h2>Shorten URL</h2>
+    <form id="urlForm">
+        <input type="text" id="urlInput" placeholder="Enter URL here..." required>
+        <input type="submit" value="Shorten URL">
+    </form>
+
+    <h2>Retrieve Original URL</h2>
+    <form id="idForm">
+        <input type="text" id="idInput" placeholder="Enter Shortened ID here..." required>
+        <input type="submit" value="Get Original URL">
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        // Hàm để lấy thời gian hiện tại
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleString(); // Định dạng thời gian theo ngôn ngữ địa phương
+        }
+
+        // Tạo hàm để gửi yêu cầu rút gọn URL
+        document.getElementById('urlForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const url = document.getElementById('urlInput').value;
+
+            try {
+                const startTime = performance.now(); // Thời gian bắt đầu
+                const response = await fetch(`http://localhost:3000/create?url=${encodeURIComponent(url)}`, {
+                    method: 'POST'
+                });
+                
+                if (!response.ok) {
+                    const errorMessage = await response.text();
+                    throw new Error(errorMessage); // Ném lỗi với thông điệp từ server
+                }
+
+                const newID = await response.text();
+                const endTime = performance.now(); // Thời gian kết thúc
+                const timeTaken = (endTime - startTime).toFixed(2); // Thời gian thực hiện
+
+                document.getElementById('result').innerHTML = `Shortened URL ID: <strong>${newID}</strong><br>Request Time: ${timeTaken} ms<br>Timestamp: ${getCurrentTime()}`;
+                document.getElementById('result').classList.remove('error'); // Xóa lớp lỗi nếu không có lỗi
+            } catch (error) {
+                document.getElementById('result').innerHTML = `Error: <strong class="error">${error.message}</strong>`;
+                document.getElementById('result').classList.add('error'); // Thêm lớp lỗi
+            }
+        });
+
+        // Tạo hàm để gửi yêu cầu lấy URL gốc
+        document.getElementById('idForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const id = document.getElementById('idInput').value;
+
+            try {
+                const startTime = performance.now(); // Thời gian bắt đầu
+                const response = await fetch(`http://localhost:3000/short/${id}`, {
+                    method: 'GET'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+
+                const originalUrl = await response.text();
+                const endTime = performance.now(); // Thời gian kết thúc
+                const timeTaken = (endTime - startTime).toFixed(2); // Thời gian thực hiện
+
+                document.getElementById('result').innerHTML = `Original URL: <strong>${originalUrl}</strong><br>Request Time: ${timeTaken} ms<br>Timestamp: ${getCurrentTime()}`;
+                document.getElementById('result').classList.remove('error'); // Xóa lớp lỗi nếu không có lỗi
+            } catch (error) {
+                document.getElementById('result').innerHTML = `Error: <strong class="error">${error.message}</strong>`;
+                document.getElementById('result').classList.add('error'); // Thêm lớp lỗi
+            }
+        });
+    </script>
+</body>
+</html>
