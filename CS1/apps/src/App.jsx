@@ -33,7 +33,9 @@ const App = () => {
 			children: (
 				<div>
 					<SearchBar url={createShortURL} />
-					<div className="title">Short link: {shortURL}</div>
+					<div className="title">
+						<span>Short link: </span> {shortURL}
+					</div>
 				</div>
 			),
 		},
@@ -44,7 +46,7 @@ const App = () => {
 				<div>
 					<SearchBar url={getOriginURL} />
 					<div className="title">
-						Origin link:
+						<span>Origin link: </span>
 						<a href={originUrl}>{originUrl}</a>
 					</div>
 				</div>
