@@ -1,4 +1,6 @@
 const { Link } = require('./models');
+const NodeCache = require("node-cache");
+const cache = new NodeCache();
 
 function makeID(length) {
     let result = '';
@@ -13,7 +15,17 @@ function makeID(length) {
 }
 
 function findOrigin(id) {
-    return Link.findOne({ where: { id } }).then(link => link ? link.url : null);
+    const cachedUrl = cache.get(id);
+    if (cachedUrl) {
+        return Promise.resolve(cachedUrl);
+    }
+    return Link.findOne({ where: { id } }).then(link => {
+        if (link) {
+            cache.set(id, link.url, 3600); // Lưu vào cache
+            return link.url;
+        }
+        return null;
+    });
 }
 
 function create(id, url) {
